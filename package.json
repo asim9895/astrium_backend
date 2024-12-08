@@ -1,0 +1,41 @@
+{
+  "name": "astrium_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "start:prod": "dotenv -e .env.prod -- nodemon dist/server.js",
+    "build:prod": "dotenv -e .env.prod -- rimraf ./dist && tsc",
+    "generate:prod": "dotenv -e .env.prod -- npx prisma generate",
+    "migrate:prod": "dotenv -e .env.prod -- npx prisma migrate deploy",
+    "start:dev": "dotenv -e .env -- nodemon dist/server.js",
+    "build:dev": "dotenv -e .env -- rimraf ./dist && tsc",
+    "generate:dev": "dotenv -e .env -- npx prisma generate",
+    "migrate:dev": "dotenv -e .env -- npx prisma migrate dev",
+    "start:local": "dotenv -e .env -- nodemon server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.21.1",
+    "bcrypt": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "slug": "^10.0.0",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.7.9",
+    "@types/slug": "^5.0.9",
+    "prisma": "^5.21.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}

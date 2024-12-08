@@ -1,0 +1,10 @@
+Phase 1 Apis (start date - 24 Oct, end date - 27 Oct)
+
+1. Register User - done
+2. Login User - done
+3. Create Organization (Create Organization And Add Members) - done
+4. Get All Organization - done
+5. All Active Organization Member (only member who accepted invite and is part of org) - done
+6. Add Organization Members - done
+7. Accept Organization Invite - done
+8. Reject Organization Invite - done

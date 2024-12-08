@@ -1,0 +1,119 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  user_id      String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  age          Int?     @default(0)
+  phone_number String?
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  created_by_user  User?   @relation("created_by", fields: [created_by], references: [user_id])
+  created_by       String?
+  modified_by_user User?   @relation("modified_by", fields: [modified_by], references: [user_id])
+  modified_by      String?
+
+  createdUsers  User[] @relation("created_by")
+  modifiedUsers User[] @relation("modified_by")
+
+  created_organizations  Organization[] @relation("created_by")
+  modified_organizations Organization[] @relation("modified_by")
+
+  created_projects  Project[] @relation("created_by")
+  modified_projects Project[] @relation("modified_by")
+
+  connected_organizations OrganizationToUser[]
+  connected_projects      ProjectToUser[]
+
+  @@map("users")
+}
+
+model Organization {
+  organization_id String   @id @default(uuid())
+  name            String   @unique
+  org_slug        String?  @unique
+  description     String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  created_by_user  User?   @relation("created_by", fields: [created_by], references: [user_id])
+  created_by       String?
+  modified_by_user User?   @relation("modified_by", fields: [modified_by], references: [user_id])
+  modified_by      String?
+
+  members  OrganizationToUser[]
+  projects Project[]
+
+  @@index([org_slug])
+  @@map("organizations")
+}
+
+enum OrgToUserStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model OrganizationToUser {
+  organization_to_user_id String @id @default(uuid())
+
+  invite_sent_time     DateTime?
+  invite_accepted_time DateTime?
+  invite_email         String
+  status               OrgToUserStatus @default(PENDING)
+  auto_added           Boolean         @default(false)
+  is_admin Boolean @default(false)
+
+  user            User?         @relation(fields: [user_id], references: [user_id])
+  user_id         String?
+  organization    Organization? @relation(fields: [organization_id], references: [organization_id])
+  organization_id String?
+  is_active       Boolean       @default(false)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  @@map("organization_to_users")
+}
+
+model Project {
+  project_id  String   @id @default(uuid())
+  name        String
+  proj_slug   String?
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  created_by_user  User?   @relation("created_by", fields: [created_by], references: [user_id])
+  created_by       String?
+  modified_by_user User?   @relation("modified_by", fields: [modified_by], references: [user_id])
+  modified_by      String?
+
+  connected_organization Organization @relation(fields: [organization_id], references: [organization_id])
+  organization_id        String
+
+  members ProjectToUser[]
+
+  @@map("projects")
+}
+
+model ProjectToUser {
+  project    Project  @relation(fields: [project_id], references: [project_id])
+  project_id String
+  user       User     @relation(fields: [user_id], references: [user_id])
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([project_id, user_id])
+  @@map("project_to_users")
+}
